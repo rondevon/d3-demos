@@ -129,7 +129,7 @@ d3.json("data.json", function (error, data) {
       return color(d.key);
     });
 
-  var cfnai_ma3_line = svg
+  var cashflow_line = svg
     .append("path")
     .datum(data)
     .attr("class", "line")
@@ -141,13 +141,12 @@ d3.json("data.json", function (error, data) {
     .enter()
     .append("g")
     .attr("class", "legend");
-  //.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
   legend
     .append("rect")
-    .attr("x", 725)
+    .attr("x", 750)
     .attr("y", function (d, i) {
-      return i * 25 + 350;
+      return i * 25 + 370;
     })
     .attr("width", 18)
     .attr("height", 18)
@@ -155,9 +154,9 @@ d3.json("data.json", function (error, data) {
 
   legend
     .append("text")
-    .attr("x", 750)
+    .attr("x", 775)
     .attr("y", function (d, i) {
-      return i * 25 + 359;
+      return i * 25 + 379;
     })
     .attr("dy", ".35em")
     .style("text-anchor", "start")
