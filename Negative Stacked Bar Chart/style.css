@@ -1,0 +1,23 @@
+.title {
+	font: 15px sans-serif;
+}
+
+.legend {
+	font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+
+.x.axis.path {
+	display: none;
+}
+
+.line {
+  fill: none;
+  stroke: #CCB40C;
+  stroke-width: 2px;
+}
