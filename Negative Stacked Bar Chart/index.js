@@ -1,14 +1,11 @@
-var margin = { top: 20, right: 20, bottom: 30, left: 40 };
+var margin = { top: 20, right: 20, bottom: 30, left: 20 };
 var width = 960 - margin.left - margin.right;
 var height = 500 - margin.top - margin.bottom;
 
-var timeFormat = d3.timeFormat("%m-%Y");
 var parseDate = d3.timeParse("%Y:%m");
 
 var x = d3.scaleTime().range([0, width]);
-
 var y = d3.scaleLinear().range([height, margin.top]);
-
 var center = d3.scaleLinear().range([0, width]);
 
 var color = d3
@@ -21,7 +18,7 @@ var labels = [
 ];
 
 var xAxis = d3.axisBottom(x).ticks(10);
-var yAxis = d3.axisLeft(y).ticks(10);
+var yAxis = d3.axisRight(y).ticks(10);
 
 var centerLine = d3.axisTop(center).ticks(0);
 
@@ -38,11 +35,7 @@ d3.json("data.json", function (error, data) {
 
     d.components = keys.map(function (key) {
       var val = d[key];
-      if (key === "spend") {
-        val = Math.abs(val) * -1;
-      } else {
-        val = Math.abs(val);
-      }
+      val = (key === "spend") ? Math.abs(val) * -1 : Math.abs(val);
 
       if (val >= 0) {
         return { key: key, y1: y0_positive, y0: (y0_positive += val) };
@@ -82,7 +75,7 @@ d3.json("data.json", function (error, data) {
   var svg = d3
     .select("body")
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
+    .attr("width", width + (margin.left + margin.right)*2)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -93,7 +86,11 @@ d3.json("data.json", function (error, data) {
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis);
 
-  svg.append("g").attr("class", "y axis").call(yAxis);
+  svg
+    .append("g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(" + (width + margin.right) + " ,0)")
+    .call(yAxis);
 
   svg
     .append("g")
@@ -129,11 +126,20 @@ d3.json("data.json", function (error, data) {
       return color(d.key);
     });
 
-  var cashflow_line = svg
+  svg
     .append("path")
     .datum(data)
     .attr("class", "line")
     .attr("d", cashflow);
+
+  // Data dots
+  svg.selectAll(".dot")
+    .data(data)
+    .enter().append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", function(d) { return x(parseDate(d.date)) + 10 })
+    .attr("cy", function(d) { return y(Math.abs(d.inflows) - Math.abs(d.spend)) })
+    .attr("r", 3.5)
 
   var legend = svg
     .selectAll(".legend")
@@ -144,9 +150,9 @@ d3.json("data.json", function (error, data) {
 
   legend
     .append("rect")
-    .attr("x", 750)
+    .attr("x", 50)
     .attr("y", function (d, i) {
-      return i * 25 + 370;
+      return i * 25 + 350;
     })
     .attr("width", 18)
     .attr("height", 18)
@@ -154,9 +160,9 @@ d3.json("data.json", function (error, data) {
 
   legend
     .append("text")
-    .attr("x", 775)
+    .attr("x", 75)
     .attr("y", function (d, i) {
-      return i * 25 + 379;
+      return i * 25 + 359;
     })
     .attr("dy", ".35em")
     .style("text-anchor", "start")
